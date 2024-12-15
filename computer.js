@@ -31,11 +31,15 @@ function transformEquation(equation) {
             const sign = match[1] === '-' ? -1 : 1;
             const coefficient = match[2] ? parseFloat(match[2]) : 1;
             const variable = match[3];
-
-            if (termMap[variable]) {
-                termMap[variable] += sign * coefficient;
-            } else {
-                termMap[variable] = sign * coefficient;
+            if (coefficient !== 0) {
+                if (termMap[variable]) {
+                    termMap[variable] += sign * coefficient;
+                    if (termMap[variable] === 0) {
+                        delete termMap[variable];
+                    }
+                } else {
+                    termMap[variable] = sign * coefficient;
+                }
             }
         }
     });
@@ -81,7 +85,7 @@ function customSqrt(value) {
 
 function solveEquation(reducedForm) {
     if (reducedForm.length === 0) {
-        console.log("No Solution");
+        console.log(0);
         return;
     }
     const coefficients = { 'X^0': 0, 'X^1': 0, 'X^2': 0 };
