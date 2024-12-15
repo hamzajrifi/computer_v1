@@ -26,7 +26,7 @@ function transformEquation(equation) {
     const combinedTerms = [...lhsTerms, ...negatedRhsTerms];
     const termMap = {};
     combinedTerms.forEach(term => {
-        const match = term.match(/([+-]?)\s*(\d*\.?\d*)\s*\*?\s*([X]\^\d+|[X])/);
+        const match = term.match(/([+-]?)\s*(\d*\.?\d*)\s*\*?\s*([a-zA-Z]\^\d+|[a-zA-Z])/);
         if (match) {
             const sign = match[1] === '-' ? -1 : 1;
             const coefficient = match[2] ? parseFloat(match[2]) : 1;
