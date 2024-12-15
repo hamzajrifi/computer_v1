@@ -11,9 +11,10 @@ function transformEquation(equation) {
         console.log("Error: Invalid equation format");
         process.exit(1);
     }
-    const lhsTerms = lhs?.split(/(?=[+-])/).map(term => term.replace(/\s+/g, ' ').trim());
-    const rhsTerms = rhs?.split(/(?=[+-])/).map(term => term.replace(/\s+/g, ' ').trim());
 
+
+    const lhsTerms = lhs?.split(/(?=[+-])/).map(term => term.replace(/\s+/g, ' ').trim().replace(/X(?!\^)/, 'X^1'));
+    const rhsTerms = rhs?.split(/(?=[+-])/).map(term => term.replace(/\s+/g, ' ').trim().replace(/X(?!\^)/, 'X^1'));
 
     const negatedRhsTerms = rhsTerms?.map(term => {
 
@@ -27,11 +28,28 @@ function transformEquation(equation) {
     const termMap = {};
     combinedTerms.forEach(term => {
         const match = term.match(/([+-]?)\s*(\d*\.?\d*)\s*\*?\s*([X]\^\d+|[X])/);
+
         if (match) {
             const sign = match[1] === '-' ? -1 : 1;
             const coefficient = match[2] ? parseFloat(match[2]) : 1;
             const variable = match[3];
             if (coefficient !== 0) {
+                if (termMap[variable]) {
+                    termMap[variable] += sign * coefficient;
+                    if (termMap[variable] === 0) {
+                        delete termMap[variable];
+                    }
+                } else {
+                    termMap[variable] = sign * coefficient;
+                }
+            }
+        }
+        else{
+            const digitMatch = term.match(/([+-]?)\s*(\d+\.?\d*)/);
+            if (digitMatch) {
+                const sign = digitMatch[1] === '-' ? -1 : 1;
+                const coefficient = parseFloat(digitMatch[2]);
+                const variable = 'X^0';
                 if (termMap[variable]) {
                     termMap[variable] += sign * coefficient;
                     if (termMap[variable] === 0) {
@@ -75,7 +93,7 @@ function checkDegree(equation) {
 function customSqrt(value) {
     let x = value;
     let y = 1;
-    let i=0;
+    let i = 0;
     while (x - y > 0.000001) {
         x = (x + y) / 2;
         y = value / x;
@@ -91,9 +109,9 @@ function solveEquation(reducedForm) {
         return;
     }
     const coefficients = { 'X^0': 0, 'X^1': 0, 'X^2': 0 };
+
     reducedForm.forEach(term => {
         const match = term.match(/([+-]?)\s*(\d*\.?\d*)\s*\*\s*(X\^\d+)/);
-
         if (match) {
             const sign = match[1] === '-' ? -1 : 1;
             const coefficient = match[2] ? parseFloat(match[2]) : 1;
