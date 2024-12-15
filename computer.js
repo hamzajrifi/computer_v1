@@ -75,9 +75,11 @@ function checkDegree(equation) {
 function customSqrt(value) {
     let x = value;
     let y = 1;
-    while (x - y > 0) {
+    let i=0;
+    while (x - y > 0.000001) {
         x = (x + y) / 2;
         y = value / x;
+        i++;
     }
     return x;
 }
@@ -85,7 +87,7 @@ function customSqrt(value) {
 
 function solveEquation(reducedForm) {
     if (reducedForm.length === 0) {
-        console.log(0);
+        console.log('All real numbers are solutions.');
         return;
     }
     const coefficients = { 'X^0': 0, 'X^1': 0, 'X^2': 0 };
