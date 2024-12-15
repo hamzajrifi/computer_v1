@@ -75,7 +75,7 @@ function checkDegree(equation) {
 function customSqrt(value) {
     let x = value;
     let y = 1;
-    let i=0;
+    let i = 0;
     while (x - y > 0.000001) {
         x = (x + y) / 2;
         y = value / x;
@@ -121,14 +121,18 @@ function solveEquation(reducedForm) {
             console.log("Discriminant is zero, the solution is:");
             console.log(root);
         } else {
-            console.log("Discriminant is strictly negative, there are no real solutions.");
+            const realPart = -b / (2 * a);
+            const imaginaryPart = customSqrt(-discriminant) / (2 * a);
+            console.log(`Discriminant is strictly negative, the two complex solutions are:`);
+            console.log(`${parseFloat(realPart.toFixed(6))} + ${parseFloat(imaginaryPart.toFixed(6))}i`);
+            console.log(`${parseFloat(realPart.toFixed(6))} - ${parseFloat(imaginaryPart.toFixed(6))}i`);
         }
     } else if (b !== 0) {
         const root = -c / b;
         console.log("The solution is:");
         console.log(parseFloat(root.toFixed(6)));
     } else {
-        console.log("No valid equation to solve.");
+        console.log("No Solution");
     }
 }
 

@@ -26,16 +26,20 @@ function transformEquation(equation) {
     const combinedTerms = [...lhsTerms, ...negatedRhsTerms];
     const termMap = {};
     combinedTerms.forEach(term => {
-        const match = term.match(/([+-]?)\s*(\d*\.?\d*)\s*\*?\s*([a-zA-Z]\^\d+|[a-zA-Z])/);
+        const match = term.match(/([+-]?)\s*(\d*\.?\d*)\s*\*?\s*([X]\^\d+|[X])/);
         if (match) {
             const sign = match[1] === '-' ? -1 : 1;
             const coefficient = match[2] ? parseFloat(match[2]) : 1;
             const variable = match[3];
-
-            if (termMap[variable]) {
-                termMap[variable] += sign * coefficient;
-            } else {
-                termMap[variable] = sign * coefficient;
+            if (coefficient !== 0) {
+                if (termMap[variable]) {
+                    termMap[variable] += sign * coefficient;
+                    if (termMap[variable] === 0) {
+                        delete termMap[variable];
+                    }
+                } else {
+                    termMap[variable] = sign * coefficient;
+                }
             }
         }
     });
@@ -71,9 +75,11 @@ function checkDegree(equation) {
 function customSqrt(value) {
     let x = value;
     let y = 1;
-    while (x - y > 0) {
+    let i=0;
+    while (x - y > 0.000001) {
         x = (x + y) / 2;
         y = value / x;
+        i++;
     }
     return x;
 }
@@ -81,7 +87,7 @@ function customSqrt(value) {
 
 function solveEquation(reducedForm) {
     if (reducedForm.length === 0) {
-        console.log("No Solution");
+        console.log('All real numbers are solutions.');
         return;
     }
     const coefficients = { 'X^0': 0, 'X^1': 0, 'X^2': 0 };
@@ -122,7 +128,7 @@ function solveEquation(reducedForm) {
         console.log("The solution is:");
         console.log(parseFloat(root.toFixed(6)));
     } else {
-        console.log("No valid equation to solve.");
+        console.log("No Solution");
     }
 }
 
